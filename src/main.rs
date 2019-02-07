@@ -41,7 +41,7 @@ fn main() {
 
         shoe.shuffle();
         match shoe.deal_card() {
-            Some(c) => println!("{}", c.to_string()),
+            Some(c) => println!("{}", c),
             _ => shoe = Shoe::new(),
         }
 

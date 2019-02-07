@@ -1,4 +1,5 @@
 use rand::Rng;
+use std::fmt;
 
 const CARDS: [char; 14] = ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2', '1'];
 const SUIT: [char; 4] = ['C', 'D', 'H', 'S'];
@@ -13,14 +14,15 @@ impl Card {
     pub fn new(value: char, suit: char) -> Card {
         Card{ value: value, suit: suit }
     }
+}
 
-    pub fn to_string(&self) -> String {
-        let mut v = String::new();
-        v.push(self.value);
-        v.push(self.suit);
-        v
+impl fmt::Display for Card {
+    // This trait requires `fmt` with this exact signature.
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}{}", self.value, self.suit)
     }
 }
+
 
 #[derive(Debug)]
 pub struct Shoe {

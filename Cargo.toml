@@ -1,0 +1,7 @@
+[package]
+name = "blackjack"
+version = "0.1.0"
+authors = ["Flowmaster <ellyssin.gimhae@gmail.com>"]
+edition = "2018"
+
+[dependencies]

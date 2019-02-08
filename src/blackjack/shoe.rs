@@ -14,6 +14,10 @@ impl Card {
     pub fn new(text: char, suit: char) -> Card {
         Card{ text: text, suit: suit }
     }
+
+    pub fn text(&self) -> char {
+        self.text
+    }
 }
 
 impl fmt::Display for Card {

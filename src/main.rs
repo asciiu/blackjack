@@ -1,7 +1,6 @@
 mod blackjack;
 
-use blackjack::shoe::Shoe;
-use blackjack::shoe::Card;
+use blackjack::Blackjack;
 use std::io;
 
 fn play_again() -> bool {
@@ -37,9 +36,8 @@ fn read_int() -> i32 {
 
 fn main() {
     let mut player_continue: bool = true;
-    let mut shoe = Shoe::new();
-    shoe.shuffle();
     let mut balance: i32;
+    let mut game = Blackjack::new();
 
     while player_continue  {
         println!("Enter a bankroll Grin amount (e.g. 1000)");
@@ -58,17 +56,7 @@ fn main() {
 
             println!("Wager amount: {}", wagered_amount);
 
-            let card: Card = match shoe.deal_card() {
-                Some(c) => c,
-                _ => {
-                    shoe = Shoe::new();
-                    shoe.shuffle();
-                    shoe.deal_card().unwrap()
-                }
-            };
-
-            println!("Dealer: {}", card);
-
+            game.run();
 
             balance -= wagered_amount;
         }

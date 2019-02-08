@@ -1,8 +1,8 @@
-mod shoe;
+mod blackjack;
 
-use shoe::Shoe;
+use blackjack::shoe::Shoe;
+use blackjack::shoe::Card;
 use std::io;
-
 
 fn play_again() -> bool {
     println!("Play again? [y|n]");
@@ -34,9 +34,11 @@ fn read_int() -> i32 {
     }
 }
 
+
 fn main() {
     let mut player_continue: bool = true;
     let mut shoe = Shoe::new();
+    shoe.shuffle();
     let mut balance: i32;
 
     while player_continue  {
@@ -47,22 +49,29 @@ fn main() {
             continue
         }
 
-        let mut wagered_amount: i32 = 0;
-        while wagered_amount == 0 {
-            println!("Enter wager amount (balance {})", balance);
-            wagered_amount = read_int();
+        while balance > 0 {
+            let mut wagered_amount: i32 = 0;
+            while wagered_amount == 0 {
+                println!("Enter wager amount (balance {})", balance);
+                wagered_amount = read_int();
+            }
+
+            println!("Wager amount: {}", wagered_amount);
+
+            let card: Card = match shoe.deal_card() {
+                Some(c) => c,
+                _ => {
+                    shoe = Shoe::new();
+                    shoe.shuffle();
+                    shoe.deal_card().unwrap()
+                }
+            };
+
+            println!("Dealer: {}", card);
+
+
+            balance -= wagered_amount;
         }
-
-        println!("Wager amount: {}", wagered_amount);
-
-        shoe.shuffle();
-        match shoe.deal_card() {
-            Some(c) => println!("{}", c),
-            _ => shoe = Shoe::new(),
-        }
-
-        balance -= wagered_amount;
-        println!("balance: {}", balance);
 
         player_continue = play_again();
     }

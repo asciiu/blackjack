@@ -7,7 +7,8 @@ use std::io;
 enum PlayerInput {
     Hit,
     Stand,
-    //Split
+    Split,
+    Unknown,
 }
 
 struct Player {
@@ -47,8 +48,8 @@ impl Player {
         total 
     }
 
-    fn print_hand(&mut self) {
-        print!("Player: ");
+    fn print_hand(&mut self, label: &str) {
+        print!("\n{}: ", label);
         for c in self.cards.iter() {
             print!("{} ", c);
         }
@@ -57,7 +58,7 @@ impl Player {
 }
 
 fn read_input() -> PlayerInput {
-    println!("(h)it (s)tand");
+    println!("\n(h)it (s)tand: ");
 
     let mut input = String::new();
 
@@ -70,7 +71,9 @@ fn read_input() -> PlayerInput {
 
     match input.trim() {
         "h" => PlayerInput::Hit,
-        _ => PlayerInput::Stand,
+        "s" => PlayerInput::Stand,
+        "p" => PlayerInput::Split,
+        _ => PlayerInput::Unknown,
     }
 }
 
@@ -116,24 +119,38 @@ impl Blackjack {
             self.player.cards.push(player_card);
 
             let mut player_score = self.player.score();
-            let dealer_score = self.dealer.score();
+            let mut dealer_score = self.dealer.score();
             let mut stand = false;
 
-            while player_score < 21 || stand {
+            while player_score < 21 && !stand {
                 let input = read_input();
                 match input {
                     PlayerInput::Hit => {
                         let player_card: Card = self.deal_card(); 
                         self.player.cards.push(player_card);
-                        self.player.print_hand();
+                        self.player.print_hand("Player");
                         player_score = self.player.score();
                     }
-                    _ => stand = true
+
+                    PlayerInput::Stand => stand = true,
+
+                    _ => ()
                 }
             }
 
-            println!("Dealer score: {}", dealer_score);
-            println!("Player score: {}", player_score);
+            while dealer_score < 17 {
+                let dealer_card: Card = self.deal_card(); 
+                self.dealer.cards.push(dealer_card);
+                dealer_score = self.dealer.score();
+            }
+            self.dealer.print_hand("Dealer");
+            //println!("Dealer score: {}", dealer_score);
+
+            //if player_score > 21 {
+            //    println!("Player score: {} (bust)", player_score);
+            //} else {
+            //    println!("Player score: {}", player_score);
+            //}
             
             if player_score > 21 || dealer_score > 21 {
                 break

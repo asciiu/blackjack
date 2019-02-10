@@ -53,12 +53,11 @@ fn main() {
                 println!("Enter wager amount (balance {})", balance);
                 wagered_amount = read_int();
             }
-
             println!("Wager amount: {}", wagered_amount);
 
-            game.run();
+            let result = game.play_round(wagered_amount);
 
-            balance -= wagered_amount;
+            balance += result;
         }
 
         player_continue = play_again();

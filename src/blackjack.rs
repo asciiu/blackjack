@@ -108,7 +108,7 @@ impl Blackjack {
         }
     }
 
-    pub fn run(&mut self) {
+    pub fn play_round(&mut self, wager: i32) -> i32 {
         let player_card: Card = self.deal_card(); 
         let dealer_card: Card = self.deal_card(); 
         println!("Dealer: {}", dealer_card);
@@ -146,25 +146,27 @@ impl Blackjack {
         }
         
         self.dealer.print_hand("Dealer");
-
-        //println!("Dealer score: {}", dealer_score);
+        self.player.cards.clear();
+        self.dealer.cards.clear();
 
         if player_score > dealer_score && player_score <= 21 {
             println!("Player (win!)");
+            wager
         } else if player_score < dealer_score && dealer_score <= 21 {
             println!("Player (lose)");
+            -wager
         } else if player_score > 21 && dealer_score <= 21 {
             println!("Player (bust)");
+            -wager
         } else if dealer_score > 21 && player_score <= 21 {
             println!("Dealer (bust)");
+            wager
         } else if dealer_score == player_score {
             println!("push");
-        } else if dealer_score > 21 && player_score > 21 {
+            0 
+        } else {
             println!("push");
+            0 
         }
-        println!("");
-            
-        self.player.cards.clear();
-        self.dealer.cards.clear();
     }
 }

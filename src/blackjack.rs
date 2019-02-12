@@ -109,17 +109,20 @@ impl Blackjack {
     }
 
     pub fn play_round(&mut self, wager: i32) -> i32 {
-        let player_card: Card = self.deal_card(); 
         let dealer_card: Card = self.deal_card(); 
-        println!("Player: {}", player_card);
-        println!("Dealer: {}", dealer_card);
-
         self.dealer.cards.push(dealer_card);
-        self.player.cards.push(player_card);
+
+        while self.player.cards.len() < 2 {
+            let card: Card = self.deal_card(); 
+            self.player.cards.push(card);
+        }
 
         let mut player_score = self.player.score();
         let mut dealer_score = self.dealer.score();
         let mut stand = false;
+
+        self.player.print_hand("Player");
+        self.dealer.print_hand("Dealer");
 
         while player_score < 21 && !stand {
             let input = read_input();

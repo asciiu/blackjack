@@ -5,6 +5,7 @@ use shoe::Card;
 use std::io;
 
 enum PlayerInput {
+    Double,
     Hit,
     Stand,
     Split,
@@ -57,8 +58,12 @@ impl Player {
     }
 }
 
-fn read_input() -> PlayerInput {
-    println!("\n(h)it (s)tand: ");
+fn read_input(card_num: usize) -> PlayerInput {
+    if card_num == 2 {
+        println!("\n(h)it (s)tand (d)ouble: ");
+    } else {
+        println!("\n(h)it (s)tand: ");
+    }
 
     let mut input = String::new();
 
@@ -71,6 +76,7 @@ fn read_input() -> PlayerInput {
     input = String::from(input.trim());
 
     match input.trim() {
+        "d" => PlayerInput::Double,
         "h" => PlayerInput::Hit,
         "s" => PlayerInput::Stand,
         "p" => PlayerInput::Split,
@@ -108,7 +114,7 @@ impl Blackjack {
         }
     }
 
-    pub fn play_round(&mut self, wager: i32) -> i32 {
+    pub fn play_round(&mut self, mut wager: i32) -> i32 {
         let dealer_card: Card = self.deal_card(); 
         self.dealer.cards.push(dealer_card);
 
@@ -125,16 +131,28 @@ impl Blackjack {
         self.dealer.print_hand("Dealer");
 
         while player_score < 21 && !stand {
-            let input = read_input();
+            let input = read_input(self.player.cards.len());
             match input {
+                PlayerInput::Double => {
+                    wager += wager;
+                    let player_card: Card = self.deal_card(); 
+                    self.player.cards.push(player_card);
+
+                    self.player.print_hand("Player");
+                    self.dealer.print_hand("Dealer");
+
+                    player_score = self.player.score();
+                    stand = true;
+                }
                 PlayerInput::Hit => {
                     let player_card: Card = self.deal_card(); 
                     self.player.cards.push(player_card);
+
                     self.player.print_hand("Player");
                     self.dealer.print_hand("Dealer");
+
                     player_score = self.player.score();
                 }
-
                 PlayerInput::Stand => {
                     stand = true;
                     self.player.print_hand("Player");

@@ -58,8 +58,8 @@ impl Player {
     }
 }
 
-fn read_input(card_num: usize) -> PlayerInput {
-    if card_num == 2 {
+fn read_input(can_double: bool) -> PlayerInput {
+    if can_double {
         println!("\n(h)it (s)tand (d)ouble: ");
     } else {
         println!("\n(h)it (s)tand: ");
@@ -75,11 +75,11 @@ fn read_input(card_num: usize) -> PlayerInput {
     // trim trailing new line
     input = String::from(input.trim());
 
-    match input.trim() {
-        "d" => PlayerInput::Double,
-        "h" => PlayerInput::Hit,
-        "s" => PlayerInput::Stand,
-        "p" => PlayerInput::Split,
+    match (can_double, input.trim()) {
+        (true, "d") => PlayerInput::Double,
+        (_, "h") => PlayerInput::Hit,
+        (_, "s") => PlayerInput::Stand,
+        (_, "p") => PlayerInput::Split,
         _ => PlayerInput::Unknown,
     }
 }
@@ -114,7 +114,7 @@ impl Blackjack {
         }
     }
 
-    pub fn play_round(&mut self, mut wager: i32) -> i32 {
+    pub fn play_round(&mut self, balance: i32, mut wager: i32) -> i32 {
         let dealer_card: Card = self.deal_card(); 
         self.dealer.cards.push(dealer_card);
 
@@ -131,7 +131,9 @@ impl Blackjack {
         self.dealer.print_hand("Dealer");
 
         while player_score < 21 && !stand {
-            let input = read_input(self.player.cards.len());
+            let can_double = self.player.cards.len() == 2 && (balance - wager) >= wager;
+            let input = read_input(can_double);
+
             match input {
                 PlayerInput::Double => {
                     wager += wager;

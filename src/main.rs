@@ -54,7 +54,7 @@ fn main() {
                 wagered_amount = read_int();
             }
 
-            let result = game.play_round(wagered_amount);
+            let result = game.play_round(balance, wagered_amount);
             balance += result;
         }
 

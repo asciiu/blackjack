@@ -92,24 +92,19 @@ pub struct Blackjack {
 
 impl Blackjack {
     pub fn new() -> Blackjack {
-        let mut s = Shoe::new();
-        s.shuffle();
-
         Blackjack{
-            shoe: s, 
+            shoe: Shoe::new(), 
             player: Player::new(),
             dealer: Player::new()
         }
     }
 
-    pub fn deal_card(&mut self) -> Card {
-        match self.shoe.deal_card() {
-            Some(c) => c,
-            _ => {
-                let mut shoe = Shoe::new();
-                shoe.shuffle();
-                self.shoe = shoe;
-                self.shoe.deal_card().unwrap()
+    fn deal_card(&mut self) -> Card {
+        match self.shoe.pop_card() {
+            Some(card) => card,
+            None => {
+                self.shoe = Shoe::new();
+                self.shoe.pop_card().unwrap()
             }
         }
     }

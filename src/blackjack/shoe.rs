@@ -42,10 +42,11 @@ impl Shoe {
                 shoe.cards.push(card);
             }
         }
+        shoe.shuffle();
         shoe
     }
 
-    pub fn shuffle(&mut self) {
+    fn shuffle(&mut self) {
         let mut i = 0;
         while i  <  self.cards.len() {
             let rand = rand::thread_rng().gen_range(0, self.cards.len());
@@ -55,7 +56,7 @@ impl Shoe {
         }
     }
 
-    pub fn deal_card(&mut self) -> Option<Card> {
+    pub fn pop_card(&mut self) -> Option<Card> {
         self.cards.pop()
     }
 }

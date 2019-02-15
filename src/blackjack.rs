@@ -24,7 +24,7 @@ impl Player {
     fn score(&mut self) -> i32 {
         let mut total = 0;
 
-        for c in self.cards.iter() {
+        for c in &self.cards {
             let v = match c.text() {
                 'K' | 'Q' | 'J' | 'T' => 10,
                 'A' => 0,
@@ -34,7 +34,7 @@ impl Player {
         }
 
         // add up all aces
-        for c in self.cards.iter() {
+        for c in &self.cards {
             if c.text() == 'A' {
                 total += 11;
                 
